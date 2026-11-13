@@ -124,11 +124,7 @@ def get_model_registry_deployment_template_dict(
                             },
                         },
                     ],
-                    "args": [
-                        "run-mysqld",
-                        "--datadir",
-                        "/var/lib/mysql/datadir",
-                    ],
+                    "args": ["run-mysqld"],
                     "image": MR_DB_IMAGE_DIGEST,
                     "imagePullPolicy": "IfNotPresent",
                     "livenessProbe": {
