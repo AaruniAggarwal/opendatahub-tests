@@ -48,6 +48,7 @@ from utilities.general import (
     wait_for_pods_by_labels,
     wait_for_pods_running,
 )
+
 from utilities.infra import get_data_science_cluster, login_with_user_password, wait_for_dsc_status_ready
 from utilities.resources.model_registry_modelregistry_opendatahub_io import ModelRegistry
 from utilities.user_utils import UserTestSession, create_htpasswd_file, wait_for_user_creation
@@ -76,9 +77,10 @@ def pytest_sessionstart(session: pytest.Session) -> None:
     # Since clusters are not heterogeneous, all nodes share the same architecture
     nodes = list(Node.get(dyn_client=client))
     cluster_architecture = nodes[0].instance.status.nodeInfo.architecture
-    if cluster_architecture == "s390x":
-        LOGGER.info("s390x cluster detected, using Red Hat MySQL 8.4 image")
-        ai_hub_constants.MR_DB_IMAGE_DIGEST = ai_hub_constants.MR_DB_IMAGE_DIGEST_S390X
+    py_config["cluster_architecture"] = cluster_architecture
+    if cluster_architecture in ("s390x", "ppc64le"):
+        LOGGER.info(f"{cluster_architecture} cluster detected, using Red Hat MySQL 8.4 image")
+        ai_hub_constants.MR_DB_IMAGE_DIGEST = ai_hub_constants.MR_DB_IMAGE_DIGEST_S390X_PPC
         ai_hub_constants.MR_DB_MYSQL_ARGS = []
 
 
